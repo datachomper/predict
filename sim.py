@@ -1,9 +1,17 @@
 #!/usr/bin/python
+class Boxes:
+	'''Stores the season's box data'''
+	def __init__(self):
+		self.week = None
 
 class Simulator:
-	def __init__(self):
+	'''Runs each prediction strategy, displays results'''
+	def __init__(self, file):
+		import csv
 		self.strategies = []
 		self.weeks = 16
+		# Import csv season data and strip comments
+		self.data = csv.reader(open(file, 'r'), delimiter=',')
 
 	def register(self, strategy):
 		self.strategies.append(strategy)
@@ -32,16 +40,24 @@ class Simulator:
 			print result
 
 class Strategy:
+	'''Scaffolding class for prediction strategies'''
+	def __init__(self):
+		self.name = ""
+
 	class result:
-		pass
-	pass
+		def __init__(self):
+			self.week = []
+			self.total = 0
 
-sim = Simulator()
-a = Strategy()
+class WithSpread(Strategy):
+	'''Bet with the spread for every game'''
+	def __init__(self):
+		self.name = "With Spread"
+		self.result.week = [0,100,200,1000,4000,1000,-200,-56,1000,1000,10,555,13,140,15,1600]
+		self.result.total = sum(self.result.week)
+
+# Bootstrap
+sim = Simulator('2009.csv')
+a = WithSpread()
 sim.register(a)
-a.name = "with spread"
-a.result.week = [0,100,200,1000,4000,1000,-200,-56,1000,1000,10,555,13,140,15,1600]
-a.result.total = sum(a.result.week)
-
 sim.weekly_totals()
-
