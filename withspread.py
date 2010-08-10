@@ -28,7 +28,7 @@ class game:
 			elif abs(self.spread) == self.ptdiff:
 				self.beatspread = False
 				self.push = True
-			elif abs(self.spread) < self.ptdiff:
+			elif self.ptdiff > abs(self.spread):
 				self.beatspread = True
 			else:
 				self.beatspread = False
