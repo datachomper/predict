@@ -5,7 +5,7 @@ import csv
 boxes = csv.reader(open('2009.csv', 'r'), delimiter=',')
 
 # Define a generic "game" class for storing game information
-class game:
+class Game:
 	def __init__(self, week):
 		self.week = int(week[0])
 		self.home = week[5]
@@ -40,7 +40,7 @@ for week in boxes:
 	if not week[0].isdigit():
 		continue
 
-	g = game(week)
+	g = Game(week)
 
 	# Ignore games without spead data
 	if g.spread == None:
