@@ -20,7 +20,7 @@ class Game:
 			self.spread = float(week[14])
 
 		# Computed data
-		if self.spread != None:
+		i+1f self.spread != None:
 			self.ptdiff = abs(self.ptsw - self.ptsl)
 			self.push = False
 			if self.spread > 0:
