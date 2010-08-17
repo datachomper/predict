@@ -95,106 +95,22 @@ class Strategy:
 			self.week = []
 			self.total = 0
 
-class WithSpread(Strategy):
-	"""Bet with the spread for every game"""
-	def __init__(self):
-		self.name = "With Spread"
+if __name__ == "__main__":
+	# Bootstrap the simulator
+	import os
+	import re
+	sim = Simulator('2009.csv')
 
-	def run(self):
-		self.result.week = {}
-		self.result.total = 0
-		for week,games in self.data.week.items():
-			weeklypurse = 0
-			for game in games:
-				# Ignore games without spread data
-				if game.spread == None:
-					continue
-
-				ptdiff = abs(game.ptsw - game.ptsl)
-				if game.spread > 0:
-					# Favored team didn't beat spread
-					weeklypurse -= 110
-				elif abs(game.spread) == ptdiff:
-					# A push returns your money
-					weeklypurse += 0
-				elif ptdiff > abs(game.spread):
-					# Favored team beat spread
-					weeklypurse += 100
-				else:
-					weeklypurse -= 110
-
-			self.result.week[week] = weeklypurse
-			self.result.total += weeklypurse
-
-class AgainstSpread(Strategy):
-	"""Bet against the spread for every game"""
-	def __init__(self):
-		self.name = "Against Spread"
-
-	def run(self):
-		self.result.week = {}
-		self.result.total = 0
-		for week,games in self.data.week.items():
-			weeklypurse = 0
-			for game in games:
-				# Ignore games without spread data
-				if game.spread == None:
-					continue
-
-				ptdiff = abs(game.ptsw - game.ptsl)
-				if game.spread > 0:
-					# Favored team didn't beat spread
-					weeklypurse += 100
-				elif abs(game.spread) == ptdiff:
-					# A push returns your money
-					weeklypurse += 0
-				elif ptdiff > abs(game.spread):
-					# Favored team beat spread
-					weeklypurse -= 110
-				else:
-					weeklypurse += 100
-
-			self.result.week[week] = weeklypurse
-			self.result.total += weeklypurse
-
-class AllWon(Strategy):
-	"""Pretend we won every bet to show baseline"""
-	def run(self):
-		self.name = "All Won"
-		self.result.week = {}
-		self.result.total = 0
-		for week,games in self.data.week.items():
-			weeklypurse = 0
-			for game in games:
-				if game.spread == None:
-					continue
-				weeklypurse += 100
-
-			self.result.week[week] = weeklypurse
-			self.result.total += weeklypurse
-
-class AllLost(Strategy):
-	"""Pretend we lost every bet to show baseline"""
-	def run(self):
-		self.name = "All Lost"
-		self.result.week = {}
-		self.result.total = 0
-		for week,games in self.data.week.items():
-			weeklypurse = 0
-			for game in games:
-				if game.spread == None:
-					continue
-				weeklypurse -= 110
-
-			self.result.week[week] = weeklypurse
-			self.result.total += weeklypurse
-
-# Bootstrap the simulator
-sim = Simulator('2009.csv')
-
-sim.register(WithSpread())
-sim.register(AgainstSpread())
-sim.register(AllWon())
-sim.register(AllLost())
-
-sim.weekly_totals()
+	# Search for valid strategies in the "strats/" directory
+	# import the strategy and add it to the simulator
+	valid = re.compile("(\w+)\.py$")
+	for file in os.listdir("strats"):
+		found = valid.search(file)
+		if found:
+			if found.group(1) != "__init__":
+				s = found.group(1)
+				exec("from strats."+s+" import "+s)
+				exec("sim.register("+s+"())")
+	
+	# Run the simulations
+	sim.weekly_totals()
