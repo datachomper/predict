@@ -25,7 +25,7 @@ class Stat():
 		self.loss = 0
 		self.rate = 1500
 
-for week in range(1,17):
+for week in range(1,19):
 	matches = Box.objects.filter(week=week)
 	print "Week:", week
 	for match in matches:
