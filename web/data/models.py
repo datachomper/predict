@@ -41,7 +41,7 @@ class Box(models.Model):
 
 	home = models.CharField(max_length=4, choices=NFL_TEAMS)
 	road = models.CharField(max_length=4, choices=NFL_TEAMS)
-	line = models.DecimalField(max_digits=3, decimal_places=1)
+	line = models.DecimalField(max_digits=3, decimal_places=1, null=True, blank=True)
 	week = models.IntegerField()
 	year = models.IntegerField()
 	hscore = models.IntegerField(null=True, blank=True)
