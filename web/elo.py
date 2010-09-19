@@ -39,7 +39,7 @@ for week in range(1,17):
 		prediction = (tally[match.road].rate - tally[match.home].rate)*7/100
 		diff = match.rscore - match.hscore
 		d = abs(abs(prediction) - abs(diff))
-		print " > home: %d road: %d" % (tally[match.home].rate, tally[match.road].rate)
+		print " > pre-game:  home: %d road: %d" % (tally[match.home].rate, tally[match.road].rate)
 		print " > predicted %d, spread %d, actual %d, delta %d" % (prediction, match.line, diff, d)
 		if week > 1:
 			delta.append(d)
@@ -49,6 +49,7 @@ for week in range(1,17):
 		# each team gets or loses half the total ELO points
 		tally[match.home].rate -= (diff * 100/7)/2
 		tally[match.road].rate += (diff * 100/7)/2
-		print " > home: %d road: %d" % (tally[match.home].rate, tally[match.road].rate)
+		print " > post-game: home: %d road: %d" % (tally[match.home].rate, tally[match.road].rate)
+
 print "------"
 print "Accuracy: %d Std Dev: %d" % (average(delta), std(delta))
