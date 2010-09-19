@@ -5,6 +5,7 @@ import settings
 setup_environ(settings)
 from data.models import Box
 from numpy import std, average
+import sys
 
 tally = {}
 delta = []
@@ -25,8 +26,14 @@ class Stat():
 		self.loss = 0
 		self.rate = 1500
 
+# Grab year argument to the script
+year = 2009
+for arg in sys.argv[1:]:
+	year = arg
+	break
+
 for week in range(1,19):
-	matches = Box.objects.filter(week=week)
+	matches = Box.objects.filter(week=week, year=year)
 	print "Week:", week
 	for match in matches:
 		# Create a stat object for teams
@@ -64,5 +71,4 @@ for week in range(1,19):
 		print " > post-game: home: %d road: %d" % (tally[match.home].rate, tally[match.road].rate)
 
 print "------"
-print delta
 print "Accuracy: %d Std Dev: %d" % (average(delta), std(delta))
