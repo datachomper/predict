@@ -1,0 +1,35 @@
+# 2010 NFL data manually imported from
+# http://www.vegasinsider.com/nfl/scoreboard/scores.cfm/week/2/season/2010?s=848
+# week,home,road,line,hscore,rscore
+1,NOR,MIN,-5.5,14,9
+1,NYG,CAR,-5.5,31,18
+1,BUF,MIA,3,10,15
+1,PIT,ATL,1,15,9
+1,CHI,DET,-6.5,19,14
+1,NWE,CIN,-5,38,24
+1,TAM,CLE,-3,17,14
+1,JAC,DEN,-3,24,17
+1,HOU,IND,2,34,24
+1,TEN,OAK,-6.5,38,13
+1,PHI,GNB,3,20,27
+1,SEA,SFO,3,31,6
+1,STL,ARI,3,13,17
+1,WAS,DAL,3.5,13,7
+1,NYJ,BAL,-1,9,10
+1,KAN,SDG,4,21,14
+2,CLE,KAN,-3
+2,GNB,BUF,12.5
+2,CIN,BAL,3
+2,TEN,PIT,-6
+2,DET,PHI,6.5
+2,DAL,CHI,-7
+2,CAR,TAM,-4
+2,ATL,ARI,-7
+2,MIN,MIA,-5.5
+2,OAK,STL,-3
+2,DEN,SEA,-3.5
+2,WAS,HOU,3
+2,SDG,JAC,-7
+2,NYJ,NWE,3
+2,IND,NYG,-4
+2,SFO,NOR,5.5
