@@ -33,7 +33,8 @@ for week in range(1,17):
 		d = abs(abs(prediction) - abs(diff))
 		print "home: %d road: %d" % (tally[match.home].rate, tally[match.road].rate)
 		print "> predicted %d, spread %d, actual %d, delta %d" % (prediction, match.line, diff, d)
-		delta.append(d)
+		if week > 1:
+			delta.append(d)
 
 		# Take scores for current week and adjust ELO
 		# We add 100 ELO for every 7 point difference
