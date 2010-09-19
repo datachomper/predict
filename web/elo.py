@@ -10,11 +10,11 @@ tally = {}
 delta = []
 
 def distance(x, y):
-	if (x < 0):
-		x = -x
-	if (y < 0):
-		y = y*-1
-	return x + y
+	if (x < 0) and (y > 0):
+		return y + abs(x)
+	if (y < 0) and (x > 0):
+		return x + abs(y)
+	return abs(x - y)
 
 class Stat():
 	def __unicode__(self):
