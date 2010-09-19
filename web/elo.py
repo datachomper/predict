@@ -9,6 +9,13 @@ from numpy import std, average
 tally = {}
 delta = []
 
+def distance(x, y):
+	if (x < 0):
+		x = -x
+	if (y < 0):
+		y = y*-1
+	return x + y
+
 class Stat():
 	def __unicode__(self):
 		return self.rate
@@ -30,7 +37,9 @@ for week in range(1,17):
 
 		# Print match info
 		print "%s:%d vs %s:%d" % (match.home, match.hscore, match.road, match.rscore)
-		# Pre-seed ratings with week 1 lines
+
+		# The Casino's are much smarter than I am so we pre-seed our ratings
+		# by reverse engineering their spread predictions
 		if week == 1:
 			tally[match.home].rate = 1500 - int((match.line * 100/7)/2)
 			tally[match.road].rate = 1500 + int((match.line * 100/7)/2)
@@ -38,7 +47,8 @@ for week in range(1,17):
 		# Find accuracy of curent ELO
 		prediction = (tally[match.road].rate - tally[match.home].rate)*7/100
 		diff = match.rscore - match.hscore
-		d = abs(abs(prediction) - abs(diff))
+		d = distance(prediction, diff)
+
 		print " > pre-game:  home: %d road: %d" % (tally[match.home].rate, tally[match.road].rate)
 		print " > predicted %d, spread %d, actual %d, delta %d" % (prediction, match.line, diff, d)
 		if week > 1:
@@ -54,4 +64,5 @@ for week in range(1,17):
 		print " > post-game: home: %d road: %d" % (tally[match.home].rate, tally[match.road].rate)
 
 print "------"
+print delta
 print "Accuracy: %d Std Dev: %d" % (average(delta), std(delta))
