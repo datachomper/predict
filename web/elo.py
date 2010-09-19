@@ -20,6 +20,7 @@ class Stat():
 
 for week in range(1,17):
 	matches = Box.objects.filter(week=week)
+	print "Week:", week
 	for match in matches:
 		# Create a stat object for teams
 		if not match.home in tally:
@@ -27,18 +28,27 @@ for week in range(1,17):
 		if not match.road in tally:
 			tally[match.road] = Stat()
 
+		# Print match info
+		print "%s:%d vs %s:%d" % (match.home, match.hscore, match.road, match.rscore)
+		# Pre-seed ratings with week 1 lines
+		if week == 1:
+			tally[match.home].rate = 1500 - int((match.line * 100/7)/2)
+			tally[match.road].rate = 1500 + int((match.line * 100/7)/2)
+
 		# Find accuracy of curent ELO
 		prediction = (tally[match.road].rate - tally[match.home].rate)*7/100
 		diff = match.rscore - match.hscore
 		d = abs(abs(prediction) - abs(diff))
-		print "home: %d road: %d" % (tally[match.home].rate, tally[match.road].rate)
-		print "> predicted %d, spread %d, actual %d, delta %d" % (prediction, match.line, diff, d)
+		print " > home: %d road: %d" % (tally[match.home].rate, tally[match.road].rate)
+		print " > predicted %d, spread %d, actual %d, delta %d" % (prediction, match.line, diff, d)
 		if week > 1:
 			delta.append(d)
 
 		# Take scores for current week and adjust ELO
 		# We add 100 ELO for every 7 point difference
 		# each team gets or loses half the total ELO points
-		tally[match.home].rate += (diff * 100/7)/2
-		tally[match.road].rate -= (diff * 100/7)/2
+		tally[match.home].rate -= (diff * 100/7)/2
+		tally[match.road].rate += (diff * 100/7)/2
+		print " > home: %d road: %d" % (tally[match.home].rate, tally[match.road].rate)
+print "------"
 print "Accuracy: %d Std Dev: %d" % (average(delta), std(delta))
