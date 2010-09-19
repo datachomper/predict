@@ -47,8 +47,10 @@ for week in range(1,17):
 		# Take scores for current week and adjust ELO
 		# We add 100 ELO for every 7 point difference
 		# each team gets or loses half the total ELO points
-		tally[match.home].rate -= (diff * 100/7)/2
-		tally[match.road].rate += (diff * 100/7)/2
+		hrate = tally[match.home].rate - (diff * 100/7)/2
+		rrate = tally[match.road].rate + (diff * 100/7)/2
+		tally[match.home].rate = (tally[match.home].rate * week + hrate) / (week + 1)
+		tally[match.road].rate = (tally[match.road].rate * week + rrate) / (week + 1)
 		print " > post-game: home: %d road: %d" % (tally[match.home].rate, tally[match.road].rate)
 
 print "------"
