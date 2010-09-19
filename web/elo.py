@@ -32,7 +32,11 @@ for arg in sys.argv[1:]:
 	year = arg
 	break
 
-for week in range(1,19):
+# Find number of weeks of data that are available
+num_weeks_avail = Box.objects.filter(year=year).order_by('-week')[0].week
+
+# Iterate over each week's games
+for week in range(1, num_weeks_avail+1):
 	matches = Box.objects.filter(week=week, year=year)
 	print "Week:", week
 	for match in matches:
