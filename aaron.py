@@ -11,6 +11,9 @@ import HTML
 year = 2010
 curr_week = (date.today() - date(2010, 9, 7)).days / 7
 
+print "<html><head><link rel=\"stylesheet\" href=\"style.css\">"
+print "<link rel=\"stylesheet\" href=\"../style.css\"></head>"
+
 for week in range(1, curr_week+3):
 	page = urllib2.urlopen('http://www.vegasinsider.com/nfl/scoreboard/scores.cfm/week/%d/season/%d'%(week,year))
 	soup = BeautifulSoup(page)
@@ -60,5 +63,7 @@ for week in range(1, curr_week+3):
 	
 		herp.append(out)
 
-	print "Week", week
-	print HTML.table(herp, header_row=['road', 'line', 'home', 'rscore', 'hscore'])
+	print "<h2>Week", week,"</h2>"
+	print HTML.table(herp, header_row=['road', 'line', 'home', 'rscore', 'hscore'], 
+			attribs={'id': 'hor-minimalist-a'}, style="", cellpadding=0,
+			border=0)
