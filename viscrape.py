@@ -6,7 +6,7 @@ from BeautifulSoup import BeautifulSoup
 import urllib2
 
 year = 2010
-week = 2
+week = 3
 
 page = urllib2.urlopen('http://www.vegasinsider.com/nfl/scoreboard/scores.cfm/week/%d/season/%d'%(week,year))
 soup = BeautifulSoup(page)
@@ -44,5 +44,9 @@ for box in soup('td', 'sportPicksBorder'):
 		hscore = int(box.table.tbody.findAll('tr')[4].findAll('td')[7].font.b.string.strip().strip('&nbsp;'))
 		out.append(hscore)
 		out.append(rscore)
+	except IndexError:
+		# This error will be thrown if the game doesn't have a score
+		# We can safetly ignore it
+		pass
 
 	print out
