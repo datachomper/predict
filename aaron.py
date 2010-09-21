@@ -6,22 +6,23 @@
 from BeautifulSoup import BeautifulSoup
 import urllib2
 from datetime import date
+import HTML
 
 year = 2010
 curr_week = (date.today() - date(2010, 9, 7)).days / 7
 
 for week in range(1, curr_week+3):
-	print "Week %d"%(week)
 	page = urllib2.urlopen('http://www.vegasinsider.com/nfl/scoreboard/scores.cfm/week/%d/season/%d'%(week,year))
 	soup = BeautifulSoup(page)
 	
+	herp = []
 	for box in soup('td', 'sportPicksBorder'):
 		out = []
 	
 		# Find the (Abbreviated) teams in the game
 		road = box.table.tbody.findAll('tr')[3].findAll('td')[0].a.string
 		home = box.table.tbody.findAll('tr')[4].findAll('td')[0].a.string
-		out.append(road)
+		out.append(str(road))
 	
 		# Find the odds and determine which is the line
 		rline = box.table.tbody.findAll('tr')[3].findAll('td')[1].string.strip('&nbsp;')
@@ -36,7 +37,7 @@ for week in range(1, curr_week+3):
 		except ValueError:
 			# Ignore it if we don't have any lines
 			pass
-		out.append(home)
+		out.append(str(home))
 	
 		# Grab the scores if the games have been completed
 		status = box.find('span', 'sub_title_red').contents[0].strip()
@@ -49,7 +50,10 @@ for week in range(1, curr_week+3):
 				# print box.table.tbody.findAll('tr')[3].findAll('td')[6]
 				pass
 	
-			out.append(rscore)
-			out.append(hscore)
+			out.append(str(rscore))
+			out.append(str(hscore))
 	
-		print '\t'.join(out)
+		herp.append(out)
+
+	print "Week", week
+	print HTML.table(herp, header_row=['road', 'line', 'home', 'rscore', 'hscore'])
