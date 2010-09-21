@@ -43,16 +43,16 @@ for week in range(1, curr_week+3):
 		try:
 			rscore = int(box.table.tbody.findAll('tr')[3].findAll('td')[6].font.b.string.strip().strip('&nbsp;'))
 			hscore = int(box.table.tbody.findAll('tr')[4].findAll('td')[6].font.b.string.strip().strip('&nbsp;'))
-			out.append(hscore)
 			out.append(rscore)
+			out.append(hscore)
 		except AttributeError:
 			# This error will be thrown if the game goes into overtime
 			# But I don't feel like scraping the quarter rows so i'll just
 			# grab the 5th quarter here.
 			rscore = int(box.table.tbody.findAll('tr')[3].findAll('td')[7].font.b.string.strip().strip('&nbsp;'))
 			hscore = int(box.table.tbody.findAll('tr')[4].findAll('td')[7].font.b.string.strip().strip('&nbsp;'))
-			out.append(hscore)
 			out.append(rscore)
+			out.append(hscore)
 		except IndexError:
 			# This error will be thrown if the game doesn't have a score
 			# We can safetly ignore it
