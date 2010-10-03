@@ -58,11 +58,12 @@ for week in range(1, num_weeks_avail+1):
 
 		# Find out if we have final score data for this week/match
 		if type(match.hscore) is types.NoneType:
-			print "%s vs %s : %d" % (match.home, match.road, prediction)
+			print "%s(%d) vs %s(%d) : %d" % (match.home, tally[match.home].rate, match.road, tally[match.road].rate, prediction)
 			continue
 
 		# If we have the scores, calculate the results
 		diff = match.rscore - match.hscore
+		spreaddiff = diff - prediction
 		d = distance(prediction, diff)
 
 		# Print match info
@@ -75,8 +76,8 @@ for week in range(1, num_weeks_avail+1):
 		# Take scores for current week and adjust ELO
 		# We add 100 ELO for every 7 point difference
 		# each team gets or loses half the total ELO points
-		hrate = tally[match.home].rate - (diff * 100/7)/2
-		rrate = tally[match.road].rate + (diff * 100/7)/2
+		hrate = tally[match.home].rate - (spreaddiff * 100/7)/2
+		rrate = tally[match.road].rate + (spreaddiff * 100/7)/2
 		tally[match.home].rate = (tally[match.home].rate * week + hrate) / (week + 1)
 		tally[match.road].rate = (tally[match.road].rate * week + rrate) / (week + 1)
 		print " > post-game: home: %d road: %d" % (tally[match.home].rate, tally[match.road].rate)
