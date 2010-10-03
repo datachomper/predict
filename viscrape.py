@@ -17,6 +17,7 @@ for week in range(1, curr_week+3):
 	for box in soup('td', 'sportPicksBorder'):
 		out = []
 		out.append(str(week))
+		line = ''
 	
 		# Find the (Abbreviated) teams in the game
 		road = box.table.tbody.findAll('tr')[3].findAll('td')[0].a.string
@@ -31,7 +32,14 @@ for week in range(1, curr_week+3):
 		# They put both the line and the over/under in random places
 		# Assuming the over/under is always greater than the line, we take
 		# the smallest to be the line
-		line = -float(rline) if (abs(float(rline)) < abs(float(hline))) else float(hline)
+		try:
+			line = -float(rline) if (abs(float(rline)) < abs(float(hline))) else float(hline)
+		except ValueError:
+			try:
+				line = float(hline)
+			except ValueError:
+				pass
+
 		out.append(str(line))
 	
 		# Grab the scores if the games have been completed
