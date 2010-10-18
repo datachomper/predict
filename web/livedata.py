@@ -31,9 +31,13 @@ url = "http://www.nfl.com/liveupdate/scorestrip/scorestrip.json"
 raw = urlopen(url).read()
 
 # Replace empty csv values with "None"
+# Here we have to use a positive lookahead assertion "(?=,)"
+# which means that we match any two commas together ",," and
+# replace it with ",None,"
 m = re.compile(",(?=,)")
 formatted = m.sub(",None", raw)
 
+# A well formatted JSON string can be eval'd into a python dictionary
 data = eval(formatted)
 
 for x in data['ss']:
