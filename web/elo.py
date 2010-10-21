@@ -39,6 +39,7 @@ num_weeks_avail = Box.objects.filter(year=year).order_by('-week')[0].week
 # Iterate over each week's games
 for week in range(1, num_weeks_avail+1):
 	matches = Box.objects.filter(week=week, year=year)
+	print ""
 	print "Week:", week
 	for match in matches:
 		# Create a stat object for teams
@@ -46,6 +47,9 @@ for week in range(1, num_weeks_avail+1):
 			tally[match.home] = Stat()
 		if not match.road in tally:
 			tally[match.road] = Stat()
+
+		# Keep win/loss ratio tally per week
+		winloss = Stat()
 
 		# The Casino's are much smarter than I am so we pre-seed our ratings
 		# by reverse engineering their spread predictions
@@ -57,19 +61,33 @@ for week in range(1, num_weeks_avail+1):
 		prediction = (tally[match.road].rate - tally[match.home].rate)*7/100
 
 		# Find out if we have final score data for this week/match
+		print "%s(%d) vs %s(%d) : %d" % (match.home, tally[match.home].rate, match.road, tally[match.road].rate, prediction)
 		if type(match.hscore) is types.NoneType:
-			print "%s(%d) vs %s(%d) : %d" % (match.home, tally[match.home].rate, match.road, tally[match.road].rate, prediction)
+		#	print "%s(%d) vs %s(%d) : %d" % (match.home, tally[match.home].rate, match.road, tally[match.road].rate, prediction)
 			continue
 
 		# If we have the scores, calculate the results
 		diff = match.rscore - match.hscore
 		spreaddiff = diff - prediction
 		d = distance(prediction, diff)
+		if (match.hscore + match.line) > match.rscore :
+			winloss.win += 1
+		else:
+			winloss.loss += 1
+		
+		# Figure out whether to bet or not
+		print prediction, match.line
+		print distance(prediction, match.line)
+		if (distance(prediction, match.line) <= 1):
+			bet = "no bet, too close"
+		else:
+			bet = "bet"
 
 		# Print match info
 		print "%s:%d vs %s:%d" % (match.home, match.hscore, match.road, match.rscore)
 		print " > pre-game:  home: %d road: %d" % (tally[match.home].rate, tally[match.road].rate)
 		print " > predicted %d, spread %d, actual %d, delta %d" % (prediction, match.line, diff, d)
+		print " > %s" % (bet)
 		if week > 1:
 			delta.append(d)
 

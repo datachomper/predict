@@ -36,10 +36,12 @@ for week in range(1, curr_week+3):
 		# the smallest to be the line
 		try:
 			line = -float(rline) if (abs(float(rline)) < abs(float(hline))) else float(hline)
-			out.append(str(line))
 		except ValueError:
-			# Ignore it if we don't have any lines
-			pass
+			try:
+				line = float(hline)
+			except ValueError:
+				pass
+
 		out.append(str(home))
 	
 		# Grab the scores if the games have been completed
