@@ -43,6 +43,7 @@ num_weeks_avail = Box.objects.filter(year=year).order_by('-week')[0].week
 
 # Iterate over each week's games
 for week in range(1, num_weeks_avail+1):
+	win = loss = 0
 	matches = Box.objects.filter(week=week, year=year)
 	print ""
 	print "Week:", week
@@ -117,24 +118,20 @@ for week in range(1, num_weeks_avail+1):
 								if ((hscore - rscore) > 0) and (match.line < 0):
 									# Bet the home team
 									print "Bet", match.home, "and winning"
+									win += 1
 								else:
 									print "Bet", match.home, "and losing"
+									loss += 1
 							# Road team is favored
 							else:
 								# Is the home team beating the vegas spread?
 								if ((rscore - hscore) > 0) and (match.line < 0):
 									# Bet the home team
 									print "Bet", match.road, "and winning"
+									win += 1
 								else:
 									print "Bet", match.road, "and losing"
-
-							# Home score is positive and I predicted home
-							# we're winning, if not, we're losing
-							#if ((hscore - rscore) > 0) and (match.line < 0):
-							#	print "Winning spread\n"
-							#else:
-							#	print "Losing spread\n"
-			
+									loss += 1
 			continue
 
 		# If we have the scores, calculate the results
@@ -146,21 +143,13 @@ for week in range(1, num_weeks_avail+1):
 		else:
 			winloss.loss += 1
 		
-		# Figure out whether to bet or not
-		print prediction, match.line
-		print distance(prediction, match.line)
-		if (distance(prediction, match.line) <= 1):
-			bet = "no bet, too close"
-		else:
-			bet = "bet"
-
 		# Print match info
-		print "%s:%d vs %s:%d" % (match.home, match.hscore, match.road, match.rscore)
-		print " > pre-game:  home: %d road: %d" % (tally[match.home].rate, tally[match.road].rate)
-		print " > predicted %d, spread %d, actual %d, delta %d" % (prediction, match.line, diff, d)
-		print " > %s" % (bet)
-		if week > 1:
-			delta.append(d)
+#		print "%s:%d vs %s:%d" % (match.home, match.hscore, match.road, match.rscore)
+#		print " > pre-game:  home: %d road: %d" % (tally[match.home].rate, tally[match.road].rate)
+#		print " > predicted %d, spread %d, actual %d, delta %d" % (prediction, match.line, diff, d)
+#		print " > %s" % (bet)
+#		if week > 1:
+#			delta.append(d)
 
 		# Take scores for current week and adjust ELO
 		# We add 100 ELO for every 7 point difference
@@ -169,7 +158,9 @@ for week in range(1, num_weeks_avail+1):
 		rrate = tally[match.road].rate + (spreaddiff * 100/7)/2
 		tally[match.home].rate = (tally[match.home].rate * week + hrate) / (week + 1)
 		tally[match.road].rate = (tally[match.road].rate * week + rrate) / (week + 1)
-		print " > post-game: home: %d road: %d" % (tally[match.home].rate, tally[match.road].rate)
+#		print " > post-game: home: %d road: %d" % (tally[match.home].rate, tally[match.road].rate)
 
 print "------"
-print "Accuracy: %f Std Dev: %f" % (average(delta), std(delta))
+#print "Accuracy: %f Std Dev: %f" % (average(delta), std(delta))
+print "Win: %s | Loss: %s" % (win, loss)
+
