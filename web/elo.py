@@ -9,6 +9,7 @@ import sys
 import types
 import re
 from urllib import urlopen
+from termcolor import colored
 
 tally = {}
 delta = []
@@ -32,6 +33,10 @@ class Stat():
 		self.loss = 0
 		self.rate = 1500
 
+class Datarow():
+	pass
+
+datatable = []
 # Grab year argument to the script
 year = 2010
 for arg in sys.argv[1:]:
@@ -40,6 +45,10 @@ for arg in sys.argv[1:]:
 
 # Find number of weeks of data that are available
 num_weeks_avail = Box.objects.filter(year=year).order_by('-week')[0].week
+
+# Pre-fetch NFL.com score feed
+url = "http://www.nfl.com/liveupdate/scorestrip/scorestrip.json"
+raw = urlopen(url).read()
 
 # Iterate over each week's games
 for week in range(1, num_weeks_avail+1):
@@ -54,13 +63,6 @@ for week in range(1, num_weeks_avail+1):
 		if not match.road in tally:
 			tally[match.road] = Stat()
 
-		# Create a rating listing so we can watch how the team's
-		# ratings change week over week
-		if not match.home in rating:
-			rating[match.home] = []
-		if not match.road in rating:
-			rating[match.road] = []
-
 		# Keep win/loss ratio tally per week
 		winloss = Stat()
 
@@ -70,19 +72,16 @@ for week in range(1, num_weeks_avail+1):
 			tally[match.home].rate = 1500 - int((match.line * 100/7)/2)
 			tally[match.road].rate = 1500 + int((match.line * 100/7)/2)
 
+		match.hrate = tally[match.home].rate
+		match.rrate = tally[match.road].rate
+
 		# Find accuracy of curent ELO
 		prediction = (tally[match.road].rate - tally[match.home].rate)*7/100
-
-		# Keep track of weekly ratings
-		rating[match.home].append(('2009W'+str(week), str(tally[match.home].rate)))
-		rating[match.road].append(('2009W'+str(week), str(tally[match.road].rate)))
+		match.prediction = prediction
 
 		# We have three states, we're either pre-games, during-games, or post games
 		if type(match.hscore) is types.NoneType:
 			# No final score data yet, check if we're mid-games
-			url = "http://www.nfl.com/liveupdate/scorestrip/scorestrip.json"
-			raw = urlopen(url).read()
-			
 			print "%s(%d) vs %s(%d) : predicted %d : line %d" % (match.home, tally[match.home].rate, match.road, tally[match.road].rate, prediction, match.line)
 
 			# If there is nfl json data, we're mid game
@@ -97,15 +96,34 @@ for week in range(1, num_weeks_avail+1):
 				# A well formatted JSON string can be eval'd into a python dictionary
 				data = eval(formatted)
 				
+				# NFL uses different abbreviations than we do
+				remap = {"SF" : "SFO", "NE" : "NWE", "SD" : "SDG"}
+
 				# Find this match's live data
 				for x in data['ss']:
 					# If this game is currently running
 					if x[2] != 'Pregame':
+						# Remap the NFL.com's team acronyms
+						try:
+							x[4] = remap[x[4]]
+						except:
+							pass
+
 						# We found our game
 						if x[4] == match.road:
+							# Load up the status member
+							match.status = x[2]
+							try:
+								if (int(match.status) > 0 and int(match.status) < 6):
+									match.status = "Q"+match.status+" "+x[3]
+							except:
+								pass
+
+							match.hscore = int(x[7])
+							match.rscore = int(x[5])
 							# Add our predicted line to the home team score and compare
-							hscore = int(x[7]) + match.line
-							rscore = int(x[5])
+							hscore = match.hscore + match.line
+							rscore = match.rscore
 
 							print "%s %s | %s %s" % (x[6], x[7], x[4], x[5])
 							# Figure out which team to bet based off the prediction and line
@@ -119,9 +137,13 @@ for week in range(1, num_weeks_avail+1):
 									# Bet the home team
 									print "Bet", match.home, "and winning"
 									win += 1
+									match.bet = match.home
+									match.betresult = "win"
 								else:
 									print "Bet", match.home, "and losing"
 									loss += 1
+									match.bet = match.home
+									match.betresult = "loss"
 							# Road team is favored
 							else:
 								# Is the home team beating the vegas spread?
@@ -129,9 +151,15 @@ for week in range(1, num_weeks_avail+1):
 									# Bet the home team
 									print "Bet", match.road, "and winning"
 									win += 1
+									match.bet = match.road
+									match.betresult = "win"
 								else:
 									print "Bet", match.road, "and losing"
 									loss += 1
+									match.bet = match.road
+									match.betresult = "loss"
+
+			datatable.append(match)
 			continue
 
 		# If we have the scores, calculate the results
@@ -142,7 +170,7 @@ for week in range(1, num_weeks_avail+1):
 			winloss.win += 1
 		else:
 			winloss.loss += 1
-		
+
 		# Print match info
 #		print "%s:%d vs %s:%d" % (match.home, match.hscore, match.road, match.rscore)
 #		print " > pre-game:  home: %d road: %d" % (tally[match.home].rate, tally[match.road].rate)
@@ -160,7 +188,31 @@ for week in range(1, num_weeks_avail+1):
 		tally[match.road].rate = (tally[match.road].rate * week + rrate) / (week + 1)
 #		print " > post-game: home: %d road: %d" % (tally[match.home].rate, tally[match.road].rate)
 
+print ""
+
+# Output the datatable
+row = ''
+cols = ['week', 'home', 'hrate', 'road', 'rrate', 'hscore', 'rscore', 'prediction', 'line', 'bet', 'betresult', 'status']
+colpadding = {}
+colormap = {'win' : 'green', 'loss' : 'red'}
+
+for col in cols:
+	colpadding[col] = len(col)
+
+print " " + " ".join(cols)
+for m in datatable:
+	for col in cols:
+		try:
+			row += " "+ str(vars(m)[col]).rjust(colpadding[col])
+		except:
+			row += " " + ''.rjust(colpadding[col]) 
+
+	try:
+		print colored(row, colormap[str(m.betresult)])
+	except:
+		print row
+	row = ''
+
 print "------"
 #print "Accuracy: %f Std Dev: %f" % (average(delta), std(delta))
 print "Win: %s | Loss: %s" % (win, loss)
-
