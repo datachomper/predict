@@ -125,22 +125,19 @@ for week in range(1, num_weeks_avail+1):
 							hscore = match.hscore + match.line
 							rscore = match.rscore
 
-							print "%s %s | %s %s" % (x[6], x[7], x[4], x[5])
 							# Figure out which team to bet based off the prediction and line
 							if (distance(prediction, match.line) <= 1):
 								# Skip bets that are too close
-								print "No Bet, too close"
+								pass
 							# Home team is favoed
 							elif (abs(prediction) > abs(match.line) and (prediction < 0)):
 								# Is the home team beating the vegas spread?
 								if ((hscore - rscore) > 0) and (match.line < 0):
 									# Bet the home team
-									print "Bet", match.home, "and winning"
 									win += 1
 									match.bet = match.home
 									match.betresult = "win"
 								else:
-									print "Bet", match.home, "and losing"
 									loss += 1
 									match.bet = match.home
 									match.betresult = "loss"
@@ -149,12 +146,10 @@ for week in range(1, num_weeks_avail+1):
 								# Is the home team beating the vegas spread?
 								if ((rscore - hscore) > 0) and (match.line < 0):
 									# Bet the home team
-									print "Bet", match.road, "and winning"
 									win += 1
 									match.bet = match.road
 									match.betresult = "win"
 								else:
-									print "Bet", match.road, "and losing"
 									loss += 1
 									match.bet = match.road
 									match.betresult = "loss"
