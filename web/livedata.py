@@ -27,7 +27,6 @@ import re
 from urllib import urlopen
 
 url = "http://www.nfl.com/liveupdate/scorestrip/scorestrip.json"
-
 raw = urlopen(url).read()
 
 # Replace empty csv values with "None"
@@ -42,4 +41,6 @@ data = eval(formatted)
 
 for x in data['ss']:
 	print x
+
+
 
