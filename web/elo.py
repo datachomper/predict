@@ -118,6 +118,9 @@ for week in range(1, num_weeks_avail+1):
 							except:
 								pass
 
+							if(match.status == "final overtime"):
+								match.status = "Final OT"
+
 							match.hscore = int(x[7])
 							match.rscore = int(x[5])
 							# Add our predicted line to the home team score and compare
