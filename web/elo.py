@@ -33,9 +33,6 @@ class Stat():
 		self.loss = 0
 		self.rate = 1500
 
-class Datarow():
-	pass
-
 datatable = []
 # Grab year argument to the script
 year = 2010
@@ -187,7 +184,7 @@ print ""
 
 # Output the datatable
 row = ''
-cols = ['week', 'home', 'hrate', 'road', 'rrate', 'hscore', 'rscore', 'prediction', 'line', 'bet', 'betresult', 'status']
+cols = ['week', 'home', 'road', 'hscore', 'rscore', 'prediction', 'line', 'bet', 'betresult', 'status']
 colpadding = {}
 colormap = {'win' : 'green', 'loss' : 'red'}
 
