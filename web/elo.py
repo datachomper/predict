@@ -9,6 +9,8 @@ import sys
 import types
 import re
 from urllib import urlopen
+
+# Need to install Pypi package "termcolor" for this
 from termcolor import colored
 
 tally = {}
@@ -184,7 +186,7 @@ print ""
 
 # Output the datatable
 row = ''
-cols = ['week', 'home', 'road', 'hscore', 'rscore', 'prediction', 'line', 'bet', 'betresult', 'status']
+cols = ['week', 'home', 'road', 'prediction', 'line', 'bet', 'hscore', 'rscore', 'betresult', 'status']
 colpadding = {}
 colormap = {'win' : 'green', 'loss' : 'red'}
 
