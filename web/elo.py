@@ -96,7 +96,7 @@ for week in range(1, num_weeks_avail+1):
 				data = eval(formatted)
 				
 				# NFL uses different abbreviations than we do
-				remap = {"SF" : "SFO", "NE" : "NWE", "SD" : "SDG"}
+				remap = {"SF":"SFO", "NE":"NWE", "SD":"SDG", "GB":"GNB", "TB":"TAM"}
 
 				# Find this match's live data
 				for x in data['ss']:
