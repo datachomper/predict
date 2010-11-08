@@ -78,10 +78,34 @@ for week in range(1, num_weeks_avail+1):
 		prediction = (tally[match.road].rate - tally[match.home].rate)*7/100
 		match.prediction = prediction
 
+		# Figure out who to bet on
+		if (distance(prediction, match.line) <= 1):
+			# Skip bets that are too close
+			match.bet = None
+		# Don't bet on this game
+		elif (prediction == 0):
+			match.bet = None
+		# We favor the home team
+		elif (prediction < 0):
+			# Home team will make their spread
+			if (match.line - prediction > 0):
+				match.bet = match.home
+			# Home team will not make their spread
+			else:
+				match.bet = match.road
+		# We favor the road team
+		else:
+			# Road team will make their spread
+			if (prediction - match.line > 0):
+				match.bet = match.road
+			# Road team will not make their spread
+			else:
+				match.bet = match.home
+
 		# We have three states, we're either pre-games, during-games, or post games
 		if type(match.hscore) is types.NoneType:
 			# No final score data yet, check if we're mid-games
-			print "%s(%d) vs %s(%d) : predicted %d : line %d" % (match.home, tally[match.home].rate, match.road, tally[match.road].rate, prediction, match.line)
+			#print "%s(%d) vs %s(%d) : predicted %d : line %d" % (match.home, tally[match.home].rate, match.road, tally[match.road].rate, prediction, match.line)
 
 			# If there is nfl json data, we're mid game
 			if raw:
@@ -96,7 +120,7 @@ for week in range(1, num_weeks_avail+1):
 				data = eval(formatted)
 				
 				# NFL uses different abbreviations than we do
-				remap = {"SF":"SFO", "NE":"NWE", "SD":"SDG", "GB":"GNB", "TB":"TAM"}
+				remap = {"SF":"SFO", "NE":"NWE", "SD":"SDG", "GB":"GNB", "TB":"TAM", "NO":"NOR", "KC":"KAN"}
 
 				# Find this match's live data
 				for x in data['ss']:
@@ -127,33 +151,27 @@ for week in range(1, num_weeks_avail+1):
 							hscore = match.hscore + match.line
 							rscore = match.rscore
 
-							# Figure out which team to bet based off the prediction and line
-							if (distance(prediction, match.line) <= 1):
-								# Skip bets that are too close
-								pass
-							# Home team is favoed
-							elif (abs(prediction) > abs(match.line) and (prediction < 0)):
+							# Figure out if we're winning
+							if (match.bet == match.home):
 								# Is the home team beating the vegas spread?
-								if ((hscore - rscore) > 0) and (match.line < 0):
-									# Bet the home team
+								if ((hscore - rscore) > 0):
 									win += 1
-									match.bet = match.home
 									match.betresult = "win"
+								elif (hscore - rscore == 0):
+									match.betresult = "push"
 								else:
 									loss += 1
-									match.bet = match.home
 									match.betresult = "loss"
-							# Road team is favored
-							else:
-								# Is the home team beating the vegas spread?
-								if ((rscore - hscore) > 0) and (match.line < 0):
+							elif (match.bet == match.road):
+								# Is the road team beating the vegas spread?
+								if ((rscore - hscore) > 0):
 									# Bet the home team
 									win += 1
-									match.bet = match.road
 									match.betresult = "win"
+								elif (rscore - hscore == 0):
+									match.betresult = "push"
 								else:
 									loss += 1
-									match.bet = match.road
 									match.betresult = "loss"
 
 			datatable.append(match)
