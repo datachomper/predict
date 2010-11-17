@@ -9,9 +9,7 @@ import sys
 import types
 import re
 from urllib import urlopen
-
-# Need to install Pypi package "termcolor" for this
-from termcolor import colored
+from datatable import datatable
 
 tally = {}
 delta = []
@@ -35,7 +33,7 @@ class Stat():
 		self.loss = 0
 		self.rate = 1500
 
-datatable = []
+datamatrix = []
 # Grab year argument to the script
 year = 2010
 for arg in sys.argv[1:]:
@@ -174,7 +172,7 @@ for week in range(1, num_weeks_avail+1):
 									loss += 1
 									match.betresult = "loss"
 
-			datatable.append(match)
+			datamatrix.append(match)
 			continue
 
 		# If we have the scores, calculate the results
@@ -205,28 +203,10 @@ for week in range(1, num_weeks_avail+1):
 
 print ""
 
-# Output the datatable
-row = ''
 cols = ['week', 'home', 'road', 'prediction', 'line', 'bet', 'hscore', 'rscore', 'betresult', 'status']
-colpadding = {}
 colormap = {'win' : 'green', 'loss' : 'red'}
 
-for col in cols:
-	colpadding[col] = len(col)
-
-print " " + " ".join(cols)
-for m in datatable:
-	for col in cols:
-		try:
-			row += " "+ str(vars(m)[col]).rjust(colpadding[col])
-		except:
-			row += " " + ''.rjust(colpadding[col]) 
-
-	try:
-		print colored(row, colormap[str(m.betresult)])
-	except:
-		print row
-	row = ''
+datatable(datamatrix, cols, colormap)
 
 print "------"
 #print "Accuracy: %f Std Dev: %f" % (average(delta), std(delta))
