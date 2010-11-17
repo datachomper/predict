@@ -1,6 +1,10 @@
 # Need to install Pypi package "termcolor" for this
 from termcolor import colored
 
+
+# data is a list of objects
+# cols is a list of object members to be displayed
+# colormap needs to be fixed
 def datatable(data, cols, colormap={}):
 	# Output the datatable
 	row = ''
