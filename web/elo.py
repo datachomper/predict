@@ -35,7 +35,7 @@ class Stat():
 
 datamatrix = []
 # Grab year argument to the script
-year = 2010
+year = 2011
 for arg in sys.argv[1:]:
 	year = arg
 	break
@@ -188,7 +188,7 @@ for week in range(1, num_weeks_avail+1):
 #		print "%s:%d vs %s:%d" % (match.home, match.hscore, match.road, match.rscore)
 #		print " > pre-game:  home: %d road: %d" % (tally[match.home].rate, tally[match.road].rate)
 #		print " > predicted %d, spread %d, actual %d, delta %d" % (prediction, match.line, diff, d)
-#		print " > %s" % (bet)
+#		print " > %s" % (match.bet)
 #		if week > 1:
 #			delta.append(d)
 
