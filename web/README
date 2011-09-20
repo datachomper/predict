@@ -1,0 +1,11 @@
+Required to run elo.py:
+ python-django
+ numpy
+
+Optional:
+ pip install termcolor
+
+Howto:
+Run ../viscrape.py > boxes2011 to scrape vegasinsider for the lines and output
+them in a sane format. Then run ./import.py to import those numbers into the
+local database. Run ./elo.py
