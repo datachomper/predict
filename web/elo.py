@@ -128,7 +128,7 @@ for week in range(1, num_weeks_avail+1):
                             pass
 
                         # We found our game
-                        if x[4] == match.road:
+                        if (x[4] == match.road) and (x[12] == "REG%s"%match.week):
                             # Load up the status member
                             match.status = x[2]
                             try:
