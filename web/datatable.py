@@ -20,7 +20,7 @@ def datatable(data, cols, colormap={}):
 	for m in data:
 		for col in cols:
 			try:
-				row += " "+ str(vars(m)[col]).rjust(colpadding[col])
+				row += " "+ str(vars(m)[col.strip()]).rjust(colpadding[col])
 			except:
 				row += " " + ''.rjust(colpadding[col]) 
 	

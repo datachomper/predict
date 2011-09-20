@@ -230,7 +230,7 @@ for week in range(1, num_weeks_avail+1):
 
     print ""
         
-    cols = ['week', 'home', 'road', 'prediction', 'line', 'bet', 'hscore', 'rscore', 'betresult', 'status']
+    cols = ['week', 'home', 'road', 'prediction', ' line', ' bet', 'hscore', 'rscore', 'betresult', 'status']
     colormap = {'win' : 'green', 'loss' : 'red'}
         
     datatable(datamatrix, cols, colormap)
