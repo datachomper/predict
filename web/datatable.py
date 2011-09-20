@@ -1,5 +1,8 @@
 # Need to install Pypi package "termcolor" for this
-from termcolor import colored
+try:
+    from termcolor import colored
+except:
+    pass
 
 
 # data is a list of objects
