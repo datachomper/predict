@@ -5,8 +5,9 @@ import settings
 setup_environ(settings)
 from data.models import Box
 import csv
+from datetime import date
 
-boxes = csv.reader(open('../boxes2011.csv', 'r'), delimiter=',')
+boxes = csv.reader(open('../boxes%s.csv'%date.today().year, 'r'), delimiter=',')
 
 for game in boxes:
 	# Ignore comments
@@ -19,7 +20,7 @@ for game in boxes:
 	except:
 		b = Box()
 
-	b.year = 2011
+	b.year = date.today().year
 	b.week = int(game[0])
 	b.home = game[1]
 	b.road = game[2]

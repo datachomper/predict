@@ -8,7 +8,8 @@ from datetime import date
 
 
 year = 2010
-curr_week = (date.today() - date(2011, 9, 11)).days / 7
+# Set this date to the tuesday prior to the first regular season game
+curr_week = (date.today() - date(2011, 9, 6)).days / 7
 
 for week in range(1, curr_week+2):
 	page = urllib2.urlopen('http://www.vegasinsider.com/nfl/scoreboard/scores.cfm/week/%d/season/%d'%(week,year))
