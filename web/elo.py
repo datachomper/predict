@@ -48,8 +48,6 @@ for week in range(1, num_weeks_avail+1):
     datamatrix = []
     win = loss = 0
     matches = Box.objects.filter(week=week, year=year)
-    print ""
-    print "Week:", week
     for match in matches:
         # Create a stat object for teams
         if not match.home in tally:
